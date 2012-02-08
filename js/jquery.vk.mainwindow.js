@@ -12,21 +12,19 @@
 		_create: function() {
             this.element.addClass("ui-widget-content").
                 css("width", 640).
-                css("height", 480).
-                resizable({
-                    minHeight: 480,
-                    minWidth: 640,
-                    resize: function(){
-                        $( "#accordion" ).accordion( "resize" );
-                    }
-                });
+                css("height", 480);
             $( "#messagebox" ).dialog({ autoOpen: false, modal: true });
+            this._setBusy( true );
+        },
 
-            var _vars = [ "lds", "ldsb", "ldsbp" ]; //each prefix is for one tab.
+        setUI: function( ){
+            var _vars = this._qmData.QUERY_OPTIONS; //[ "lds", "ldsb", "ldsbp" ]; //each prefix is for one tab.
 
-            var acc_data = "<div>";
+            //create the tabbed widget for the query options provided
+            var acc_data = "";
+            var tab_header = "<ul>";
             for( v in _vars ){
-                var acc_header = "<h3> <a href=\"#\">" + _vars[v] + "</a></h3>";
+                tab_header += "<li> <a href=\"#" + _vars[v] + "_tablecontainer\" >" + _vars[v] + "</a></li>";
                 var filter_button = "<button id='" + _vars[v] + "_filter'> Filter </button>";
                 var msg = "<span style=\"padding:5px;margin:2px;display:none\"> Error mesg </span>";
                 var acc_datatable = "<div id='" + _vars[v] +"_datatable'> </div>";
@@ -35,11 +33,15 @@
                                        msg +
                                        acc_datatable +
                                        "</div>";
-                acc_data += acc_header + table_container + "</div> <div>";
+                acc_data += table_container;
             }
-            this.element.html( "<div id='accordion'>" + acc_data + "</div>" );
-            $( "#accordion" ).accordion({ header: "h3", fillSpace: true });
+            tab_header += "</ul>";
+            this.element.html( "<div id=\"accordion\">" + tab_header + acc_data + "</div>" );
+            $( "#accordion" ).tabs({ fx: { opacity: 'toggle' } });
+            $( "#accordion" ).css( "width", this.element.width() - 5 ).
+                css( "height", this.element.height() - 5 );
 
+            //creating the ui elements for the data tabels etc.
             for( v in _vars ){
                 //set the data tables to show the data.
                 $( "#" + _vars[v] + "_datatable" ).datatable();
@@ -65,12 +67,14 @@
                 });
             }
 
-            $( "#lds_datatable" ).datatable( "option", {
-                header: ["ID", "project", "initial", "final"], 
-                width: $("#lds_tablecontainer").width()
+            //filling one of the tables with junk data. for verification
+            $( "#LDS_datatable" ).datatable( "option", {
+                header: ["ID", "project", "initial", "final", "asdf", "asdfas"], 
+                width: $("#LDS_tablecontainer").width()
             });
-            $( "#lds_datatable" ).datatable( "option", "data", [[10, 10, 20, 10], [20, 20, 1, 24], [10, 2, 46, 32], [3, 5, 6, 34]] );
-		},
+            $( "#LDS_datatable" ).datatable( "option", "data", [[10, 10, 20, 10, 10, 20], [20, 20, 1, 24, 20, 21], [10, 2, 46, 32, 20, 1], [3, 5, 6, 34, 20, 39]] );
+	
+        },
 			
         _setBusy: function( val ){
             if(val){
@@ -101,6 +105,13 @@
 
 		_setOption: function( option, value ) {
 			$.Widget.prototype._setOption.apply( this, arguments );
+            switch(option){
+                case "init":
+                    this._qmData = value;
+                    this.setUI();
+                    this._setBusy( false );
+                    break;
+            }
         }
 	});
 })( jQuery );
