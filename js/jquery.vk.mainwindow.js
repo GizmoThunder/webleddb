@@ -6,7 +6,6 @@
     $.widget("vk.mainwindow", {
 		options: {
             //callbacks
-            getSelected: null,
             _setBusy: null
 		},
 				
@@ -21,10 +20,26 @@
                         $( "#accordion" ).accordion( "resize" );
                     }
                 });
-            $( "#accordion" ).accordion({ header: "h3", fillSpace: true });
             $( "#messagebox" ).dialog({ autoOpen: false, modal: true });
 
             var _vars = [ "lds", "ldsb", "ldsbp" ]; //each prefix is for one tab.
+
+            var acc_data = "<div>";
+            for( v in _vars ){
+                var acc_header = "<h3> <a href=\"#\">" + _vars[v] + "</a></h3>";
+                var filter_button = "<button id='" + _vars[v] + "_filter'> Filter </button>";
+                var msg = "<span style=\"padding:5px;margin:2px;display:none\"> Error mesg </span>";
+                var acc_datatable = "<div id='" + _vars[v] +"_datatable'> </div>";
+                var table_container = "<div id='" + _vars[v] + "_tablecontainer'>" + 
+                                       filter_button +
+                                       msg +
+                                       acc_datatable +
+                                       "</div>";
+                acc_data += acc_header + table_container + "</div> <div>";
+            }
+            this.element.html( "<div id='accordion'>" + acc_data + "</div>" );
+            $( "#accordion" ).accordion({ header: "h3", fillSpace: true });
+
             for( v in _vars ){
                 //set the data tables to show the data.
                 $( "#" + _vars[v] + "_datatable" ).datatable();
@@ -48,8 +63,8 @@
                             html( dlg_id ).
                             dialog( "open" );
                 });
- 
             }
+
             $( "#lds_datatable" ).datatable( "option", {
                 header: ["ID", "project", "initial", "final"], 
                 width: $("#lds_tablecontainer").width()
@@ -57,18 +72,6 @@
             $( "#lds_datatable" ).datatable( "option", "data", [[10, 10, 20, 10], [20, 20, 1, 24], [10, 2, 46, 32], [3, 5, 6, 34]] );
 		},
 			
-        getSelected: function( selected_row_keys ){
-            //console.log("getting selected");
-            var rows = this.element.find( "tr" );
-            var key = this.keyindex;
-            rows.each( function() {
-                if( $( this ).hasClass( "ui-state-highlight" ) ){
-                    var _cols = $(this).children();
-                    selected_row_keys.push( _cols[key].innerHTML );
-                }
-            });
-        },
-        
         _setBusy: function( val ){
             if(val){
                 this.element.block({
