@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+		<title>jQuery UI Example Page</title>
+		<link type="text/css" href="css/start/jquery-ui-1.8.17.custom.css" rel="stylesheet" />	
+		<script type="text/javascript" src="js/jquery-1.7.1.min.js"></script>
+		<script type="text/javascript" src="js/jquery-ui-1.8.17.custom.min.js"></script>
+		<script type="text/javascript" src="js/jquery.blockUI.js"></script>
+		<script type="text/javascript" src="js/jquery.vk.datatable.js"></script>
+		<script type="text/javascript" src="js/jquery.vk.mainwindow.js"></script>
+		<script type="text/javascript">
+			$(function(){
+                $( "#mainwindow" ).mainwindow();
+           });
+
+		</script>
+		<style type="text/css">
+			/*demo page css*/
+			body{ font: 62.5% "Trebuchet MS", sans-serif; margin: 50px;}
+            td{text-align:center;}
+		</style>	
+	</head>
+	<body>
+	<!-- Accordion -->
+        <div id="mainwindow" style="padding:10px;">
+		<div id="accordion">
+			<div>
+				<h3><a href="#">LOFAR Data Sets (LDS)</a></h3>
+				<div id="lds_tablecontainer">
+                    <button id="lds_filter"> Filter</button>
+                    <span id="lds_message" class="ui-state-error ui-corner-all" style="padding:5px;margin:2px;display:none"> Error Message wassaaap </span> 
+                    <div id="lds_datatable">
+                    </div><!-- end data table --> 
+               </div><!-- lds-tablecontainer -->
+			</div>
+			<div>
+				<h3><a href="#">LOFAR Data Set Beam (LDSB)</a></h3>
+				<div id="ldsb_tablecontainer">
+                    <button id="ldsb_filter"> Filter</button>
+                    <span id="ldsb_message" class="ui-state-error ui-corner-all" style="padding:5px;margin:2px;display:none"> Error Message wassaaap </span> 
+                     <div id="ldsb_datatable">
+                    </div><!-- end data table --> 
+               </div> <!-- ldsb-tablecontainer -->
+			</div>
+			<div>
+				<h3><a href="#">LOFAR Data Beam Product (LDSBP)</a></h3>
+				<div id="ldsbp_tablecontainer">
+                    <button id="ldsbp_filter"> Filter</button>
+                    <span id="ldsbp_message" class="ui-state-error ui-corner-all" style="padding:5px;margin:2px;display:none"> Error Message wassaaap </span> 
+                     <div id="ldsbp_datatable">
+                    </div><!-- end data table -->                    
+               </div> <!-- ldsbp-tablecontainer -->
+			</div>
+		</div>
+        </div>
+    	<!-- ui-messagebox-->
+		<div id="messagebox" title="Dialog Title">
+        <p id="messageboxtext"> This is just a message box for the whole ui</p>
+		</div>
+	</body>
+</html>
+
+
