@@ -39,8 +39,8 @@
             fw.html( fw_content ).
                 insertAfter( $( "#mainwindow" ) ).
                 dialog({
-                width: 530,
-                height:480,
+                width: 540,
+                height:490,
                 show: "fadein",
                 hide: "fadeout",
                 modal:true,
