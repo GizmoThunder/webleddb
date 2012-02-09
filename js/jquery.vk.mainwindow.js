@@ -41,8 +41,8 @@
                 dialog({
                 width: 530,
                 height:480,
-                show: "slide",
-                hide: "slide",
+                show: "fadein",
+                hide: "fadeout",
                 modal:true,
                 title: "Filter Options",
                 autoOpen: false,
