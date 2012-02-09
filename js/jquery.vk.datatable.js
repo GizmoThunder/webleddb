@@ -40,6 +40,16 @@
             this.element.html( _html );
         },
         
+        _selectAll: function(){
+            var rows = this.element.find( "tr" );
+            rows.each( function() {
+                    if( !$( this ).hasClass( "ui-state-highlight" ) ){
+                        $( this ).toggleClass( "ui-state-highlight" );
+                    }
+                }
+            );
+        },
+
         getSelected: function( selected_row_keys ){
             //console.log("getting selected");
             var rows = this.element.find( "tr" );
@@ -64,8 +74,16 @@
 			$.Widget.prototype._setOption.apply( this, arguments );
 			
 			switch ( option ) {
+                case "selectall":
+                    if( value ){
+                        this._selectAll();
+                    }
+                    break;
                 case "width":
                     this.element.css( "width", value );
+                    break;
+                case "height":
+                    this.element.css( "height", value );
                     break;
                 case "data":
                     this.fillData( value );

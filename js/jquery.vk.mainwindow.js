@@ -22,8 +22,48 @@
             var qso = this._qmData.QUERY_SELECTION_OPTIONS;
 
             //create the widget to pop when filter buttons are pressed
-            console.log( qso.length );
-
+            var fw_list = "<ul>";
+            var fw_data = "";
+            for( i in qso ){
+                fw_list += "<li> <a href=\"#" + qso[i].name + "_tablecontainer\">" + qso[i].name + "</a></li>";                
+                fw_data += "<div id=\"" + qso[i].name + "_tablecontainer\">" + qso[i].header + "</div>";
+            }
+            fw_list += "</ul>";
+            var fw = $( "<div id=\"filterwidget\" class=\"ui-widget-container\"> </div>" );
+            var fw_content =  $( "<div></div>" );
+            fw_content.
+                css( "width", 500 ).
+                css( "height", 390 ).
+                html( fw_list + fw_data ).
+                tabs();
+            fw.html( fw_content ).
+                insertAfter( $( "#mainwindow" ) ).
+                dialog({
+                width: 530,
+                height:480,
+                show: "slide",
+                hide: "slide",
+                modal:true,
+                title: "Filter Options",
+                autoOpen: false,
+                buttons:{
+                    cancel:function(){
+                        $(this).dialog( "close" );
+                    }
+                }});
+            //fill the filter options in the filter widget.
+            for( i in qso ){
+                $( "#" + qso[i].name + "_tablecontainer" ).
+                    datatable().
+                    datatable( "option", {
+                        header: qso[i].header,
+                        data: qso[i].data,
+                        width: 440,
+                        height: 280,
+                        "selectall": qso[i].defaultin
+                    }).
+                    css( "overflow", "auto" ); 
+            }
             //create the tabbed widget for the query options provided
             var acc_data = "";
             var tab_header = "<ul>";
@@ -41,7 +81,7 @@
             }
             tab_header += "</ul>";
             this.element.html( "<div id=\"accordion\">" + tab_header + acc_data + "</div>" );
-            $( "#accordion" ).tabs({ fx: { opacity: 'toggle' } });
+            $( "#accordion" ).tabs();
             $( "#accordion" ).css( "width", this.element.width() - 5 ).
                 css( "height", this.element.height() - 5 );
 
@@ -49,12 +89,6 @@
             for( v in _vars ){
                 //set the data tables to show the data.
                 $( "#" + _vars[v] + "_datatable" ).datatable();
-
-                //add the dialog box for specifying filter data. (this should probably be created after each ajax call)
-                var dlg = "<div id='" + _vars[v] + "_filterdialog'> This is the filter dialog </div>";
-                $( dlg ).insertAfter( $( "#messagebox" ) );
-                $( "#" + _vars[v] + "_filterdialog" ).dialog({ autoOpen: false, modal:true });
-
                 //configure the filter buttons.
                 $( "#" + _vars[v] + "_filter" ).
                     button({
@@ -62,13 +96,13 @@
                             primary:"ui-icon-gear"
                         }
                     });
+
                 $( "#" + _vars[v] + "_filter" ).
                     click( function(){
-                        var dlg_id = "#" + $(this).attr( "id" ) + "dialog";
-                        $( "#" + $(this).attr( "id" ) + "dialog" ).
-                            html( dlg_id ).
-                            dialog( "open" );
-                });
+                        //fw_content.tabs( "option", "disabled", [2, 4, 5] );
+                        fw.dialog( "option", {title : "Filter options for " + $(this).attr( "id" ).split('_')[0]} );
+                        fw.dialog( "open" );
+                    });
             }
 
             //filling one of the tables with junk data. for verification
