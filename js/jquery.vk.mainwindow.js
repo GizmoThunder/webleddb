@@ -19,6 +19,10 @@
 
         setUI: function( ){
             var _vars = this._qmData.QUERY_OPTIONS; //[ "lds", "ldsb", "ldsbp" ]; //each prefix is for one tab.
+            var qso = this._qmData.QUERY_SELECTION_OPTIONS;
+
+            //create the widget to pop when filter buttons are pressed
+            console.log( qso.length );
 
             //create the tabbed widget for the query options provided
             var acc_data = "";

@@ -12,8 +12,7 @@
 		<script type="text/javascript">
 			$(function(){
                 $( "#mainwindow" ).mainwindow();
-                $.get("../initleddb.html", function( data ) {
-                    var _data = JSON.parse( data );
+                $.getJSON("initleddb.html", function( _data ) {
                     $( "#mainwindow" ).mainwindow( "option", "init", _data );
                 });
  
