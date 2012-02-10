@@ -14,7 +14,6 @@
                 css("width", 640).
                 css("height", 480);
             $( "#messagebox" ).dialog({ autoOpen: false, modal: true });
-            this._setBusy( true );
         },
 
         setUI: function( ){
@@ -32,17 +31,17 @@
             var fw = $( "<div id=\"filterwidget\" class=\"ui-widget-container\"> </div>" );
             var fw_content =  $( "<div></div>" );
             fw_content.
-                css( "width", 500 ).
-                css( "height", 390 ).
+                css( "width", 490 ).
+                css( "height", 410 ).
                 html( fw_list + fw_data ).
                 tabs();
             fw.html( fw_content ).
                 insertAfter( $( "#mainwindow" ) ).
                 dialog({
-                width: 540,
-                height:490,
-                show: "fadein",
-                hide: "fadeout",
+                width: 520,
+                height:550,
+                show: "slide",
+                hide: "slide",
                 modal:true,
                 title: "Filter Options",
                 autoOpen: false,
@@ -51,6 +50,15 @@
                         $(this).dialog( "close" );
                     }
                 }});
+            $( "<div id='filtermsg' style='margin-top: 5px; padding: 0 .9em;'> </div>" ).
+                html('<p><span class="ui-icon ui-icon-info" style="float: left; margin-right: .3em;"></span>' + qso[0].helptext + "</p>").
+                addClass( "ui-state-highlight ui-widget-header" ).
+                insertBefore( fw_content );
+            //change the help message everytime a tab is pressed.
+            fw.bind('tabsshow', function( e, ui ){
+                $( "#filtermsg" ).html('<p><span class="ui-icon ui-icon-info" style="float: left; margin-right: .3em;"></span>' + qso[ui.index].helptext + "</p>");
+            });
+
             //fill the filter options in the filter widget.
             for( i in qso ){
                 $( "#" + qso[i].name + "_tablecontainer" ).
@@ -58,8 +66,8 @@
                     datatable( "option", {
                         header: qso[i].header,
                         data: qso[i].data,
-                        width: 440,
-                        height: 280,
+                        width: 460,
+                        height: 300,
                         "selectall": qso[i].defaultin
                     }).
                     css( "overflow", "auto" ); 
@@ -81,7 +89,34 @@
             }
             tab_header += "</ul>";
             this.element.html( "<div id=\"accordion\">" + tab_header + acc_data + "</div>" );
-            $( "#accordion" ).tabs();
+            var mw = this.element;
+            $( "#accordion" ).tabs({
+                //specifying what to do when we start showing up the tabs.
+                show: function( e, ui ){
+                    mw.mainwindow( "option", "busy", true );
+                    //replace with the querier.py when its' ready for usage.
+                    $.getJSON( "ldsfirstquery.html", {
+                        qo: ui.tab.text,
+                        pqo: null,
+                        sv: null
+                    }, function( obj ){
+                        //set the widget width and height.
+                        var tcontainer = $( "#" + ui.tab.text + "_tablecontainer" );
+                        tcontainer.height( $( "#mainwindow" ).height() - 90 );
+                        $( "#" + ui.tab.text + "_datatable" ).
+                        css( "overflow", "auto" ).
+                        datatable( "option", {
+                            header: obj.header, 
+                            data: obj.data,
+                            width: tcontainer.width(),
+                            height: tcontainer.height()
+                        }); 
+                        //unblock the ui.
+                        mw.mainwindow( "option", "busy", false );
+                    });
+                }
+            });
+
             $( "#accordion" ).css( "width", this.element.width() - 5 ).
                 css( "height", this.element.height() - 5 );
 
@@ -104,14 +139,6 @@
                         fw.dialog( "open" );
                     });
             }
-
-            //filling one of the tables with junk data. for verification
-            $( "#LDS_datatable" ).datatable( "option", {
-                header: ["ID", "project", "initial", "final", "asdf", "asdfas"], 
-                width: $("#LDS_tablecontainer").width()
-            });
-            $( "#LDS_datatable" ).datatable( "option", "data", [[10, 10, 20, 10, 10, 20], [20, 20, 1, 24, 20, 21], [10, 2, 46, 32, 20, 1], [3, 5, 6, 34, 20, 39]] );
-	
         },
 			
         _setBusy: function( val ){
@@ -147,7 +174,10 @@
                 case "init":
                     this._qmData = value;
                     this.setUI();
-                    this._setBusy( false );
+                    //this._setBusy( false );
+                    break;
+                case "busy":
+                    this._setBusy( value );
                     break;
             }
         }

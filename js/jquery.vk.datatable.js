@@ -1,5 +1,5 @@
 /*function aargh( tr ){
-   $(tr).toggleClass('ui-state-highlight');
+   $(tr).toggleClass('ui-state-active');
 }*/
 (function($) {
 
@@ -30,7 +30,7 @@
                 _html += "<th class='ui-widget-header' style='text-transform:uppercase;'>" + this.header[v] + "</th>";
             }
             for( v in this.data ){
-                _html += "<tr onClick='$(this).toggleClass(\"ui-state-highlight\");'>"
+                _html += "<tr onClick='$(this).toggleClass(\"ui-state-active\");'>"
                 for( h in this.header ){
                     _html += "<td align='center'>" + this.data[v][h] + "</td>";
                 }
@@ -43,8 +43,8 @@
         _selectAll: function(){
             var rows = this.element.find( "tr" );
             rows.each( function() {
-                    if( !$( this ).hasClass( "ui-state-highlight" ) ){
-                        $( this ).toggleClass( "ui-state-highlight" );
+                    if( !$( this ).hasClass( "ui-state-active" ) ){
+                        $( this ).toggleClass( "ui-state-active" );
                     }
                 }
             );
@@ -55,7 +55,7 @@
             var rows = this.element.find( "tr" );
             var key = this.keyindex;
             rows.each( function() {
-                if( $( this ).hasClass( "ui-state-highlight" ) ){
+                if( $( this ).hasClass( "ui-state-active" ) ){
                     var _cols = $(this).children();
                     selected_row_keys.push( _cols[key].innerHTML );
                 }
