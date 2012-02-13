@@ -16,7 +16,7 @@
             $( "#messagebox" ).dialog({ autoOpen: false, modal: true });
         },
 
-        setUI: function( ){
+        setUI: function(){
             var _vars = this._qmData.QUERY_OPTIONS; //[ "lds", "ldsb", "ldsbp" ]; //each prefix is for one tab.
             var qso = this._qmData.QUERY_SELECTION_OPTIONS;
 
@@ -24,15 +24,15 @@
             var fw_list = "<ul>";
             var fw_data = "";
             for( i in qso ){
-                fw_list += "<li> <a href=\"#" + qso[i].name + "_tablecontainer\">" + qso[i].name + "</a></li>";                
-                fw_data += "<div id=\"" + qso[i].name + "_tablecontainer\">" + qso[i].header + "</div>";
+                fw_list += "<li> <a href=\"#fwtablecontainer_" + qso[i].name + "\">" + qso[i].name + "</a></li>";                
+                fw_data += "<div id=\"fwtablecontainer_" + qso[i].name + "\">" + qso[i].header + "</div>";
             }
             fw_list += "</ul>";
             var fw = $( "<div id=\"filterwidget\" class=\"ui-widget-container\"> </div>" );
             var fw_content =  $( "<div></div>" );
             fw_content.
                 css( "width", 490 ).
-                css( "height", 410 ).
+                css( "height", 420 ).
                 html( fw_list + fw_data ).
                 tabs();
             fw.html( fw_content ).
@@ -61,13 +61,13 @@
 
             //fill the filter options in the filter widget.
             for( i in qso ){
-                $( "#" + qso[i].name + "_tablecontainer" ).
+                $( "#fwtablecontainer_" + qso[i].name ).
                     datatable().
                     datatable( "option", {
                         header: qso[i].header,
                         data: qso[i].data,
                         width: 460,
-                        height: 300,
+                        height: 330,
                         "selectall": qso[i].defaultin
                     }).
                     css( "overflow", "auto" ); 
@@ -76,11 +76,11 @@
             var acc_data = "";
             var tab_header = "<ul>";
             for( v in _vars ){
-                tab_header += "<li> <a href=\"#" + _vars[v] + "_tablecontainer\" >" + _vars[v] + "</a></li>";
+                tab_header += "<li> <a href=\"#tablecontainer_" + _vars[v] + "\" >" + _vars[v] + "</a></li>";
                 var filter_button = "<button id='" + _vars[v] + "_filter'> Filter </button>";
                 var msg = "<span style=\"padding:5px;margin:2px;display:none\"> Error mesg </span>";
-                var acc_datatable = "<div id='" + _vars[v] +"_datatable'> </div>";
-                var table_container = "<div id='" + _vars[v] + "_tablecontainer'>" + 
+                var acc_datatable = "<div id='datatable_" + _vars[v] + "'> </div>";
+                var table_container = "<div id='tablecontainer_" + _vars[v] + "'>" + 
                                        filter_button +
                                        msg +
                                        acc_datatable +
@@ -88,7 +88,13 @@
                 acc_data += table_container;
             }
             tab_header += "</ul>";
-            this.element.html( "<div id=\"accordion\">" + tab_header + acc_data + "</div>" );
+            this.element.html( "<div id=\"accordion\">" + tab_header + acc_data + "</div>" ).resizable( {
+                resize: function(){
+                    var h = $(this).height();
+                    $( "#accordion" ).css( {"width": $(this).width()-5, "height": h-5 } );
+                    $( "div[id^='datatable_']" ).css( "height", h - 85);
+                }
+            });
             var mw = this.element;
             $( "#accordion" ).tabs({
                 //specifying what to do when we start showing up the tabs.
@@ -101,15 +107,15 @@
                         sv: null
                     }, function( obj ){
                         //set the widget width and height.
-                        var tcontainer = $( "#" + ui.tab.text + "_tablecontainer" );
+                        var tcontainer = $( "#tablecontainer_" + ui.tab.text );
                         tcontainer.height( $( "#mainwindow" ).height() - 90 );
-                        $( "#" + ui.tab.text + "_datatable" ).
+                        $( "#datatable_" + ui.tab.text ).
                         css( "overflow", "auto" ).
                         datatable( "option", {
                             header: obj.header, 
                             data: obj.data,
-                            width: tcontainer.width(),
-                            height: tcontainer.height()
+                            width: "100%",
+                            height: "100%"
                         }); 
                         //unblock the ui.
                         mw.mainwindow( "option", "busy", false );
@@ -123,7 +129,7 @@
             //creating the ui elements for the data tabels etc.
             for( v in _vars ){
                 //set the data tables to show the data.
-                $( "#" + _vars[v] + "_datatable" ).datatable();
+                $( "#datatable_" + _vars[v] ).datatable();
                 //configure the filter buttons.
                 $( "#" + _vars[v] + "_filter" ).
                     button({

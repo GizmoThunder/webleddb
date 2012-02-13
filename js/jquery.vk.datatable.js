@@ -1,6 +1,3 @@
-/*function aargh( tr ){
-   $(tr).toggleClass('ui-state-active');
-}*/
 (function($) {
 
     $.widget("vk.datatable", {
@@ -30,7 +27,7 @@
                 _html += "<th class='ui-widget-header' style='text-transform:uppercase;'>" + this.header[v] + "</th>";
             }
             for( v in this.data ){
-                _html += "<tr onClick='$(this).toggleClass(\"ui-state-active\");'>"
+                _html += "<tr>";
                 for( h in this.header ){
                     _html += "<td align='center'>" + this.data[v][h] + "</td>";
                 }
@@ -38,6 +35,19 @@
             }
             _html += "</table>";
             this.element.html( _html );
+
+            var rows = this.element.find( "tr" );
+            rows.each( function() {
+                    $( this ).click( function(){
+                            $( this ).toggleClass( "ui-state-active" );
+                        }
+                    ).
+                    mouseenter( function( me ) {
+                        if( me.shiftKey ){
+                            $( this ).toggleClass( "ui-state-active" );
+                        }
+                    });
+            });
         },
         
         _selectAll: function(){
