@@ -1,5 +1,20 @@
-(function($) {
+function checkboxHandler( cb, e ){
+    var th = cb.parent();
+    var tr = th.parent();
+    var table = tr.parent();
+    if( $( cb ).attr( 'checked' ) ){
+        table.find( "tr" ).each( function(){
+                $(this).addClass( "ui-state-active" );
+                });
+    }else{
+        table.find( "tr" ).each( function(){
+                $(this).removeClass( "ui-state-active" );
+                });
+    }
+    tr.toggleClass( "ui-state-active" );
+}
 
+(function($) {
     $.widget("vk.datatable", {
 		options: {
             width: "320",
@@ -22,14 +37,18 @@
 			
         fillData: function( value ) {
             this.data = value;
-            var _html = "<table width='100%'>";
+            var _html = "<table width='100%'>"+"<th><input type='checkbox' onClick='checkboxHandler( $(this) );'> </input></th>";
             for( v in this.header ){
                 _html += "<th class='ui-widget-header' style='text-transform:uppercase;'>" + this.header[v] + "</th>";
             }
             for( v in this.data ){
                 _html += "<tr>";
                 for( h in this.header ){
-                    _html += "<td align='center'>" + this.data[v][h] + "</td>";
+                    if(h == 0){
+                        _html += "<td align='center' colspan=2>" + this.data[v][h] + "</td>";
+                    }else{
+                        _html += "<td align='center'>" + this.data[v][h] + "</td>";
+                    }
                 }
                 _html += "</tr>";
             }
@@ -86,6 +105,7 @@
 			switch ( option ) {
                 case "selectall":
                     if( value ){
+                        this.element.find( "input" ).attr( "checked", true );
                         this._selectAll();
                     }
                     break;
