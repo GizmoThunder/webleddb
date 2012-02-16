@@ -3,6 +3,7 @@ function checkboxHandler( cb, e ){
     var tr = th.parent();
     var table = tr.parent();
     if( $( cb ).attr( 'checked' ) ){
+        tr.addClass( "ui-state-active" );
         table.find( "tr" ).each( function(){
                 $(this).addClass( "ui-state-active" );
                 });
@@ -10,12 +11,73 @@ function checkboxHandler( cb, e ){
         table.find( "tr" ).each( function(){
                 $(this).removeClass( "ui-state-active" );
                 });
+        tr.removeClass( "ui-state-active" );
     }
-    tr.toggleClass( "ui-state-active" );
 }
 
 (function($) {
-    $.widget("vk.datatable", $.ui.mouse, {
+    $.widget( "vk.uitable", $.ui.mouse, {
+        options: {
+        },
+
+        _create: function(){
+            this._mouseInit();
+            var rows = this.element.find( "tr" );
+            rows.each( function(){
+                    $( this ).bind( 'mousedown', function(){
+                            $( this ).toggleClass( "ui-state-active" );
+                        }
+                    );
+            });
+            this.helper = $( "<div class='ui-selectable-helper'> </div>" );
+        },
+
+        _mouseStart: function( event ){
+            this.opos = {x:event.pageX, y:event.pageY};
+            this.helper.css({
+                "left": event.pageX,
+                "top": event.pageY,
+                "width":0,
+                "height":0
+            }); 
+            $( 'body' ).append( this.helper );
+            //since we start dragging from here. register the callback for adding class
+            var rows = this.element.find( "tr" );
+            rows.each( function(){
+                $(this).bind( 'mouseover', function(){
+                    $(this).addClass( 'ui-state-active' );
+                });
+            });
+        },
+
+        _mouseDrag: function( event ){
+            var x1 = this.opos.x, y1 = this.opos.y, x2 = event.pageX, y2 = event.pageY;
+            if (x1 > x2) { var tmp = x2; x2 = x1; x1 = tmp; }
+            if (y1 > y2) { var tmp = y2; y2 = y1; y1 = tmp; }
+            this.helper.css({left: x1, top: y1, width: x2-x1, height: y2-y1});
+        },
+   	   
+        _mouseStop: function( event ){
+            this.helper.remove();
+            //since we start dragging from here. register the callback for adding class
+            var rows = this.element.find( "tr" );
+            rows.each( function(){
+                $(this).unbind( 'mouseover' );
+            });
+        },
+
+        _setOptions: function(){
+            $.Widget.prototype._setOptions.apply(this, arguments);
+        },
+
+		_setOption: function( option, value ) {
+			$.Widget.prototype._setOption.apply( this, arguments );
+	    }		
+    });
+})( jQuery );
+
+(function($) {
+    $.widget( "vk.datatable", {
 		options: {
             width: "320",
             height: "80px",
@@ -25,14 +87,9 @@ function checkboxHandler( cb, e ){
 		},
 				
 		_create: function() {
-            this.element.addClass("ui-widget-content").
-                css("width", 320).
-                css("height", 180);
+            this.element.addClass("ui-widget-content");
             this.keyindex = 1;
             this.header = ['First', 'Second'];
-            this.helper = $( "<div class='ui-selectable-helper'> </div>" );
-
-            this._mouseInit();
 		},
 			
         fillData: function( value ) {
@@ -56,15 +113,9 @@ function checkboxHandler( cb, e ){
             }
             _html += "</table>";
             this.element.html( _html );
-
-            var rows = this.element.find( "tr" );
-            rows.each( function(){
-                    $( this ).click( function(){
-                            $( this ).toggleClass( "ui-state-active" );
-                        }
-                    );
-            });
-        },
+            var tables = this.element.find( "table" );
+            tables.uitable();
+       },
         
         _selectAll: function(){
             var rows = this.element.find( "tr" );
@@ -91,39 +142,6 @@ function checkboxHandler( cb, e ){
 		destroy: function() {			
 			this.element.html( "" );
 		},
-
-        _mouseStart: function( event ){
-            this.opos = {x:event.clientX, y:event.clientY};
-            this.helper.css({
-                "left": event.clientX,
-                "top": event.clientY,
-                "width":0,
-                "height":0
-            }); 
-            $( 'body' ).append( this.helper );
-        },
-
-        _mouseDrag: function( event ){
-            var x1 = this.opos.x, y1 = this.opos.y, x2 = event.pageX, y2 = event.pageY;
-            if (x1 > x2) { var tmp = x2; x2 = x1; x1 = tmp; }
-            if (y1 > y2) { var tmp = y2; y2 = y1; y1 = tmp; }
-            this.helper.css({left: x1, top: y1, width: x2-x1, height: y2-y1});
-            //we should probably move the check code to the mouse stop function. 
-            var h = y2 - y1;
-            var offset = this.element.position();
-            y1 = y1 - offset.top;
-            var rows = this.element.find( "tr" );
-            rows.each( function(){
-                var pos = $(this).position();
-                if( (pos.top+$(this).height()) > y1 && pos.top < (y1 + h) ){
-                    $(this).addClass( 'ui-state-active' );
-                }
-            }); 
-        },
-   	   
-        _mouseStop: function( event ){
-            this.helper.remove();
-        },
 
         _setOptions: function(){
             $.Widget.prototype._setOptions.apply(this, arguments);
