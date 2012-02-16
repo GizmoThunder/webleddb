@@ -20,58 +20,19 @@
             var _vars = this._qmData.QUERY_OPTIONS; //[ "lds", "ldsb", "ldsbp" ]; //each prefix is for one tab.
             var qso = this._qmData.QUERY_SELECTION_OPTIONS;
 
-            //create the widget to pop when filter buttons are pressed
-            var fw_list = "<ul>";
-            var fw_data = "";
-            for( i in qso ){
-                fw_list += "<li> <a href=\"#fwtablecontainer_" + qso[i].name + "\">" + qso[i].name + "</a></li>";                
-                fw_data += "<div id=\"fwtablecontainer_" + qso[i].name + "\">" + qso[i].header + "</div>";
-            }
-            fw_list += "</ul>";
             var fw = $( "<div id=\"filterwidget\" class=\"ui-widget-container\"> </div>" );
-            var fw_content =  $( "<div></div>" );
-            fw_content.
-                css( "width", 490 ).
-                css( "height", 420 ).
-                html( fw_list + fw_data ).
-                tabs();
-            fw.html( fw_content ).
-                insertAfter( $( "#mainwindow" ) ).
-                dialog({
-                width: 520,
-                height:550,
-                show: "slide",
-                hide: "slide",
-                modal:true,
-                title: "Filter Options",
-                autoOpen: false,
-                buttons:{
-                    cancel:function(){
-                        $(this).dialog( "close" );
-                    }
-                }});
-            $( "<div id='filtermsg' style='margin-top: 5px; padding: 0 .9em;'> </div>" ).
-                html('<p><span class="ui-icon ui-icon-info" style="float: left; margin-right: .3em;"></span>' + qso[0].helptext + "</p>").
-                addClass( "ui-state-highlight ui-widget-header" ).
-                insertBefore( fw_content );
-            //change the help message everytime a tab is pressed.
-            fw.bind('tabsshow', function( e, ui ){
-                $( "#filtermsg" ).html('<p><span class="ui-icon ui-icon-info" style="float: left; margin-right: .3em;"></span>' + qso[ui.index].helptext + "</p>");
+            var fwcontent = $( "<div></div>" );
+            fwcontent.filterwindow();
+            fwcontent.filterwindow( "option", "init", qso );
+            fw.append( fwcontent ).
+               dialog({
+                "autoOpen":false,
+                width:320,
+                height:440,
+                show:"slide",
+                hide:"slide"
             });
 
-            //fill the filter options in the filter widget.
-            for( i in qso ){
-                $( "#fwtablecontainer_" + qso[i].name ).
-                    datatable().
-                    datatable( "option", {
-                        header: qso[i].header,
-                        data: qso[i].data,
-                        width: 460,
-                        height: 330,
-                        "selectall": qso[i].defaultin
-                    }).
-                    css( "overflow", "auto" ); 
-            }
             //create the tabbed widget for the query options provided
             var acc_data = "";
             var tab_header = "<ul>";
