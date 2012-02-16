@@ -111,7 +111,7 @@ function checkboxHandler( cb, e ){
             //we should probably move the check code to the mouse stop function. 
             var h = y2 - y1;
             var offset = this.element.position();
-            var y1 = this.opos.y - offset.top;
+            y1 = y1 - offset.top;
             var rows = this.element.find( "tr" );
             rows.each( function(){
                 var pos = $(this).position();
