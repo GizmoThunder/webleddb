@@ -24,7 +24,6 @@
 		},
 		
         _fillData: function( qso ){
-            console.log( qso );
             this.content_holder.css( "width", (qso.length+2) * 300 );
 
             var scroller = this.scroller;
@@ -85,6 +84,8 @@
                         "selectall": qso[i].defaultin
                 });
                 qso_data.css({
+                    position: "relative",
+                    top: "5px",
                     width: "295px",
                     height: "350px",
                     overflow: "auto"
