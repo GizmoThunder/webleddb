@@ -26,11 +26,21 @@
             fwcontent.filterwindow( "option", "init", qso );
             fw.append( fwcontent ).
                dialog({
-                "autoOpen":false,
+                autoOpen:false,
                 width:320,
-                height:440,
+                height:490,
+                resizable: false,
                 show:"slide",
-                hide:"slide"
+                hide:"slide",
+                modal: true,
+                buttons: {
+                    Ok : function(){
+                        //make a json call to load the current view.
+                    },
+                    Cancel : function(){
+                        fw.dialog( "close" );
+                    },
+               }
             });
 
             //create the tabbed widget for the query options provided
