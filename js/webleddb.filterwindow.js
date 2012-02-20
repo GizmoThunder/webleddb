@@ -37,7 +37,7 @@
                 }).
                 click( function(){
                     $( $(this).attr( "screen" ) ).show( "slide", {}, 500, function(){
-                        menu_content.hide(); //slide the menu_content away. 
+                        menu_content.fadeOut(); //slide the menu_content away. 
                     });
                 }).
                 button();
@@ -54,13 +54,13 @@
                     attr( "screen", "#screen_" + qso[i].name ).
                     click( function(){
                         var sc_id = $(this).attr( "screen" );
-                        menu_content.show();
+                        menu_content.fadeIn();
                         $( sc_id ).hide( "slide", {}, 500);    
                     }).
                     button();
                 var content = $( "<div> </div>" );
                 content.
-                    append( "<span style='text-align:center;float:left;width:245px;height:30px' class='ui-state-highlight ui-corner-all'>" +
+                    append( "<span style='text-align:center;float:left;width:240px;height:30px' class='ui-state-highlight ui-corner-all'>" +
                         qso[i].helptext+
                         "</span>" ).
                     attr( "id", "screen_" + qso[i].name ).
@@ -72,7 +72,8 @@
                         position: "absolute",
                         left: "10px",
                         top: "10px",
-                        display: "none"
+                        display: "none",
+                        "background-color": "#ffffff"
                     });
                 var qso_data = $( "<div></div>" );
                 qso_data.datatable().
