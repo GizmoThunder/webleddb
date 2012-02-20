@@ -5,28 +5,19 @@
 		},
 				
 		_create: function() {
-            this.scroller = $( "<div></div>" );
             this.content_holder = $( "<div></div>" );
-            this.scroller.css({
-                overflow:"hidden",
-                width:"300px",
-                height:"400px",
-                //border:"solid 1px #000000"
-            }).
-            append( this.content_holder );
             this.element.
                 css({
                     overflow:'hidden',
                     width:"300px",
                     height:"400px"
                 }).
-                append( this.scroller );
+                append( this.content_holder );
 		},
 		
         _fillData: function( qso ){
-            this.content_holder.css( "width", (qso.length+2) * 300 );
+            this.content_holder.css( "width", 300 );
 
-            var scroller = this.scroller;
             //fill the first page of the filter window with buttons.
             var menu_content = $( "<div></div>" );
             menu_content.
@@ -37,16 +28,17 @@
                 });
             for( var i in qso ){
                 var item = $( "<button>" + qso[i].name + "</button>" );
-                var scrollAmount = (Number(i)+1) * 300;
                 //we will set the attribute "sa" of the button which is not standard to be able to scroll the right amount.
                 item.
-                attr("sa", scrollAmount).
+                attr( "screen", "#screen_" + qso[i].name ).
                 css({
                     width: "300px",
                     height: "30px"
                 }).
                 click( function(){
-                    scroller.animate( {scrollLeft:$(this).attr("sa")}, 500 );
+                    $( $(this).attr( "screen" ) ).show( "slide", {}, 500, function(){
+                        menu_content.hide(); //slide the menu_content away. 
+                    });
                 }).
                 button();
                 menu_content.append( item );
@@ -56,13 +48,14 @@
 
             //now start filling the rest of the pages for filter window
             for( var i in qso ){
-                var scrollAmount = -(Number(i)+1) * 300;
                 var _button = $( "<button>Back</button>" );
                 _button.
                     css( "float", "right").
-                    attr( "sa", scrollAmount ).
+                    attr( "screen", "#screen_" + qso[i].name ).
                     click( function(){
-                        scroller.animate( {scrollLeft:$(this).attr("sa")}, 500 );
+                        var sc_id = $(this).attr( "screen" );
+                        menu_content.show();
+                        $( sc_id ).hide( "slide", {}, 500);    
                     }).
                     button();
                 var content = $( "<div> </div>" );
@@ -70,11 +63,16 @@
                     append( "<span style='text-align:center;float:left;width:245px;height:30px' class='ui-state-highlight ui-corner-all'>" +
                         qso[i].helptext+
                         "</span>" ).
+                    attr( "id", "screen_" + qso[i].name ).
                     append( _button ).
                     css({
                         float: "left",
                         width: "300px",
-                        height: "400px"
+                        height: "400px",
+                        position: "absolute",
+                        left: "10px",
+                        top: "10px",
+                        display: "none"
                     });
                 var qso_data = $( "<div></div>" );
                 qso_data.datatable().
