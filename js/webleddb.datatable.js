@@ -16,7 +16,7 @@ function checkboxHandler( cb, e ){
 }
 
 (function($) {
-    $.widget( "vk.uitable", $.ui.mouse, {
+    $.widget( "webleddb.uitable", $.ui.mouse, {
         options: {
         },
 
@@ -77,7 +77,7 @@ function checkboxHandler( cb, e ){
 })( jQuery );
 
 (function($) {
-    $.widget( "vk.datatable", {
+    $.widget( "webleddb.datatable", {
 		options: {
             width: "320",
             height: "80px",

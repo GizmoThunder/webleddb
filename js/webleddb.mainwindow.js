@@ -3,7 +3,7 @@
 }*/
 (function($) {
 
-    $.widget("vk.mainwindow", {
+    $.widget("webleddb.mainwindow", {
 		options: {
             //callbacks
             _setBusy: null

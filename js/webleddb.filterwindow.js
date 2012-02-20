@@ -1,5 +1,5 @@
 (function($) {
-    $.widget("vk.filterwindow", {
+    $.widget("webleddb.filterwindow", {
 		options: {
             init: [{"name":"LDS"}, {"name":"LDSB"}, {"name":"LDSVP"}]
 		},
